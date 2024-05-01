@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 function Square({ value, onSquareClick }) {
   return (
@@ -18,7 +18,7 @@ function calculateWinner(squares) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
@@ -31,19 +31,32 @@ function calculateWinner(squares) {
 
 function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true)
-  let status 
-  let winner = calculateWinner(squares)
-  winner ? status = "Winner: " + winner : status = "Next Player: " + (xIsNext? "X" : "O")
-
-  function handleClick(i) {
-    if (squares[i] || calculateWinner(squares)) return 
-    const nextSquares = squares.slice();
-    xIsNext ? nextSquares[i] = "X" : nextSquares[i] = "O"
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext)
+  const [xIsNext, setXIsNext] = useState(true);
+  let status;
+  let winner = calculateWinner(squares);
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next Player: " + (xIsNext ? "X" : "O");
   }
 
+  if (!winner && !squares.includes(null)){
+    status = "The Game is Draw"
+  }
+
+  console.log(squares)
+
+  function handleClick(i) {
+    if (squares[i] || calculateWinner(squares)) return;
+    const nextSquares = squares.slice();
+    xIsNext ? (nextSquares[i] = "X") : (nextSquares[i] = "O");
+    setSquares(nextSquares);
+    setXIsNext(!xIsNext);
+  }
+
+  function handleReset() {
+    setSquares(Array(9).fill(null));
+  }
 
   return (
     <>
@@ -63,12 +76,12 @@ function Board() {
         <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
-      <button className="reset">Reset</button>
-
+      <button className="reset" onClick={() => handleReset()}>
+        Reset
+      </button>
     </>
   );
 }
-
 
 function App() {
   return (
